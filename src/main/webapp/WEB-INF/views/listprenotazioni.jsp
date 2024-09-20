@@ -25,6 +25,29 @@
 <body>
     <div class="container">
         <h2 class="mb-4">Lista Prenotazioni</h2>
+
+        <form action="${pageContext.request.contextPath}/listprenotazioni" method="get" class="mb-4">
+            <div class="row">
+                <div class="col">
+                    <input type="text" name="userId" class="form-control" placeholder="User ID" value="${param.userId}" />
+                </div>
+                <div class="col">
+                    <input type="text" name="veicoloId" class="form-control" placeholder="Veicolo ID" value="${param.veicoloId}" />
+                </div>
+                <div class="col">
+                    <input type="date" name="dataInizio" class="form-control" value="${param.dataFine != null ? param.dataInizio.format('yyyy-MM-dd') : ''}" />
+
+                </div>
+                <div class="col">
+                    <input type="date" name="dataFine" class="form-control" value="${param.dataInizio != null ? param.dataFine.format('yyyy-MM-dd') : ''}" />
+
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn btn-primary">Cerca</button>
+                </div>
+            </div>
+        </form>
+
         <div class="table-responsive">
             <table class="table table-striped table-bordered">
                 <thead>
@@ -51,6 +74,7 @@
                 </tbody>
             </table>
         </div>
+        <a href="${pageContext.request.contextPath}/schermataSuperUser" class="btn btn-secondary">Torna Indietro</a>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

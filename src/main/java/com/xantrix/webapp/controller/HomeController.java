@@ -1,5 +1,6 @@
 package com.xantrix.webapp.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +52,20 @@ public class HomeController
         }
         return "login";
 	}
+	
+	@GetMapping("/login")
+	public String showLoginPage() {
+	    return "login";  
+	}
 
-	
-	
+	@GetMapping("/logout")
+	public String logout(HttpServletRequest request) {
+	    HttpSession session = request.getSession(false);
+	    if (session != null) {
+	        session.invalidate();  
+	    }
+	    return "redirect:/login";  
+	}	
 	
 	@GetMapping("/register")
     public String showRegistrationForm() {
@@ -81,6 +93,7 @@ public class HomeController
         model.addAttribute("successMessage", "Registrazione completata con successo!");
         return "register";
     }
+	
 	
     @GetMapping("/schermataSuperUser")
     public String showSuperUserPage(HttpSession session, Model model) {

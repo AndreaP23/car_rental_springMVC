@@ -39,7 +39,10 @@
     <div class="container">
         <h1>SchermataCustomer</h1>
         <a href="listveicoli" class="btn btn-custom">Lista Veicoli</a>
+        <br></br>
+        <a href="logout" class="btn btn-danger">Logout</a>
     </div>
+    
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

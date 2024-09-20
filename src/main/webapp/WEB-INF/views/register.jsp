@@ -44,7 +44,7 @@
                 alert(successMessage);
                 
                 setTimeout(function() {
-                    window.location.href = 'index';
+                    window.location.href = 'login';
                 }, 2000);
             }
         };
