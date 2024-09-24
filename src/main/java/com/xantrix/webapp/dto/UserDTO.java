@@ -1,11 +1,13 @@
-package com.xantrix.webapp.domain;
+package com.xantrix.webapp.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Date;
 
-public class User implements Serializable {
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class UserDTO {
 	
-	private static final long serialVersionUID = 1253610162501013226L;
 	
 	private Long userId;
 	private String nome;
@@ -13,6 +15,7 @@ public class User implements Serializable {
 	private String email;
 	private String telefono;
 	private String password;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate dataNascita;
 	private int ruolo;
 	
@@ -80,7 +83,7 @@ public class User implements Serializable {
 		this.ruolo = ruolo;
 	}
 	
-	public User() {
+	public UserDTO() {
 		
 	}
 }

@@ -18,7 +18,7 @@ public class UserMapper implements RowMapper<User> {
             user.setCognome(row.getString("cognome"));
             user.setEmail(row.getString("email"));
             user.setPassword(row.getString("password")); 
-            user.setDataNascita(row.getDate("data_nascita"));
+            user.setDataNascita(row.getDate("data_nascita").toLocalDate());
             user.setTelefono(row.getString("phone"));
             user.setRuolo(row.getInt("ruolo_id")); 
         } catch (Exception ex) {
