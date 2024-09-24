@@ -8,7 +8,20 @@
 <body>
     <div class="container">
         <h2>Registrazione</h2>
-        <form action="${pageContext.request.contextPath}/register" method="post">
+        
+        <c:if test="${not empty errorMessage}">
+            <div class="alert alert-danger">
+                ${errorMessage}
+            </div>
+        </c:if>
+
+        <c:if test="${not empty successMessage}">
+            <div class="alert alert-success">
+                ${successMessage}
+            </div>
+        </c:if>
+
+        <form id="registrationForm" action="${pageContext.request.contextPath}/register" method="post">
             <div class="form-group">
                 <label for="nome">Nome:</label>
                 <input type="text" class="form-control" id="nome" name="nome" required />
@@ -33,16 +46,17 @@
                 <label for="dataNascita">Data di Nascita:</label>
                 <input type="date" class="form-control" id="dataNascita" name="dataNascita" />
             </div>
-            <button type="submit" class="btn btn-primary">Registrati</button>
+            <button id="submitButton" type="submit" class="btn btn-primary">Registrati</button>
         </form>
     </div>
     
+
     <script>
         window.onload = function() {
             var successMessage = '${successMessage}';
             if (successMessage) {
                 alert(successMessage);
-                
+
                 setTimeout(function() {
                     window.location.href = 'login';
                 }, 2000);

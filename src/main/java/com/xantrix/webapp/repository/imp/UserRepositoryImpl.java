@@ -1,5 +1,6 @@
 package com.xantrix.webapp.repository.imp;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mindrot.jbcrypt.BCrypt;
@@ -37,6 +38,31 @@ public class UserRepositoryImpl implements UserRepository {
     public User findUserByEmail(String email) {
         String sql = "SELECT * FROM user WHERE email = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{email}, new UserMapper());
+    }
+	
+	@Override
+    public List<User> searchUsers(String nome, String cognome, String email, String phone) {
+        StringBuilder sql = new StringBuilder("SELECT * FROM user WHERE (1=1)");
+        List<Object> params = new ArrayList<>();
+
+        if (nome != null && !nome.isEmpty()) {
+            sql.append(" AND nome LIKE ?");
+            params.add("%" + nome + "%");
+        }
+        if (cognome != null && !cognome.isEmpty()) {
+            sql.append(" AND cognome LIKE ?");
+            params.add("%" + cognome + "%");
+        }
+        if (email != null && !email.isEmpty()) {
+            sql.append(" AND email LIKE ?");
+            params.add("%" + email + "%");
+        }
+        if (phone != null && !phone.isEmpty()) {
+            sql.append(" AND telefono LIKE ?");
+            params.add("%" + phone + "%");
+        }
+
+        return jdbcTemplate.query(sql.toString(), new UserMapper(), params.toArray());
     }
 	
 	

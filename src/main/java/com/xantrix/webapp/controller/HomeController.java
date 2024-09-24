@@ -1,9 +1,12 @@
 package com.xantrix.webapp.controller;
 
+import java.sql.SQLIntegrityConstraintViolationException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -88,9 +91,19 @@ public class HomeController
         user.setTelefono(telefono);
         user.setDataNascita(dataNascita != null ? java.sql.Date.valueOf(dataNascita) : null);
         user.setRuolo(2); 
-        userRepository.saveUser(user);
+        
+        try { 
+            userRepository.saveUser(user);
+            model.addAttribute("successMessage", "Registrazione completata con successo!");
+        } catch (DataIntegrityViolationException e) {
+            if (e.getCause() instanceof SQLIntegrityConstraintViolationException) {
+                model.addAttribute("errorMessage", "Email già in uso. Riprova con un'email diversa.");
+            } else {
+                model.addAttribute("errorMessage", "Errore durante la registrazione. Riprova.");
+            }
+            return "register"; 
+        }
 
-        model.addAttribute("successMessage", "Registrazione completata con successo!");
         return "register";
     }
 	

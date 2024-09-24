@@ -13,7 +13,7 @@
 
             <div class="form-body">
 
-                <form:hidden path="userId" value="${userId}"/>
+                <form:hidden path="userId" value="${user.userId}"/>
                 <form:hidden path="veicoloId" value="${veicolo.idVeicolo}"/>
 
                 <div class="form-group">

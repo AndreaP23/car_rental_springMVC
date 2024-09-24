@@ -35,16 +35,28 @@ public class SuperUserController {
 	private static final Logger logger = LoggerFactory.getLogger(CustomerController.class);
 	
 	@GetMapping("/listuser")
-	public String listUsers(HttpSession session, Model model){
-		List<User> users = userRepository.listUser();
-		model.addAttribute("users",users);
-		User user = (User) session.getAttribute("user");
-		if (user != null && user.getRuolo() == 1){
-			return "listuser";
+    public String listUsers(@RequestParam(required = false) String nome,
+                            @RequestParam(required = false) String cognome,
+                            @RequestParam(required = false) String email,
+                            @RequestParam(required = false) String telefono,
+                            HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user != null && user.getRuolo() == 1) {
+            List<User> users;
+
+            if (nome == null && cognome == null && email == null && telefono == null) {
+                users = userRepository.listUser(); 
+            } else {
+                users = userRepository.searchUsers(nome, cognome, email, telefono);
+            }
+
+            model.addAttribute("users", users);
+            return "listuser"; 
         } else {
             return "redirect:/login"; 
         }
-	}
+    }
+
 	
 	@GetMapping("/listprenotazioni")
 	public String listPrenotazione(@RequestParam(required = false) String userId,

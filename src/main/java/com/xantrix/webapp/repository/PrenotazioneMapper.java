@@ -3,7 +3,6 @@ package com.xantrix.webapp.repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.ZoneId;
 
 import org.springframework.jdbc.core.RowMapper;
 
@@ -16,19 +15,29 @@ public class PrenotazioneMapper implements RowMapper<Prenotazione> {
         Prenotazione prenotazione = new Prenotazione();
         try {
             prenotazione.setIdPrenotazione(row.getLong("prenotazione_id"));
-            prenotazione.setDataPrenotazione(convertToLocalDate(row.getDate("data_prenotazione")));
-            prenotazione.setDataInizio(convertToLocalDate(row.getDate("data_inizio")));
-            prenotazione.setDataFine(convertToLocalDate(row.getDate("data_fine")));
+            prenotazione.setDataPrenotazione(row.getDate("data_prenotazione").toLocalDate());
+            prenotazione.setDataInizio(row.getDate("data_inizio").toLocalDate());
+            prenotazione.setDataFine(row.getDate("data_fine").toLocalDate());
             prenotazione.setUserId(row.getLong("user_id"));
             prenotazione.setVeicoloId(row.getLong("veicolo_id"));
         } catch (SQLException ex) {
             System.err.println("Errore durante il mapping della prenotazione: " + ex.getMessage());
-            throw ex; 
+            throw ex;
         }
         return prenotazione;
     }
-
+    
+    
+  //Passo l'istanza Date e lo converto in LocalDate
+    /*
     private LocalDate convertToLocalDate(java.util.Date date) {
-        return (date != null) ? date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate() : null;
+        if (date instanceof java.sql.Date) {
+            return ((java.sql.Date) date).toLocalDate();
+        } else if (date != null) {
+            return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        } else {
+            return null;
+        }
     }
+}*/
 }

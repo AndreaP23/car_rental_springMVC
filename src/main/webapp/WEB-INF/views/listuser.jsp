@@ -11,8 +11,9 @@
     <div class="container mt-4">
         <h2 class="mb-4">Lista Utenti</h2>
 
+		<!--  Sistemare ricerca, seguire ListPrenotazioni. -->
         <!-- Modulo di ricerca -->
-        <form action="${pageContext.request.contextPath}/listUsers" method="get" class="mb-4">
+        <form action="${pageContext.request.contextPath}/listuser" method="get" class="mb-4">
             <div class="row">
                 <div class="col">
                     <input type="text" name="nome" class="form-control" placeholder="Nome" />

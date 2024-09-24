@@ -12,6 +12,9 @@ public interface UserRepository {
 	void saveUser(User user);
 	
 	User findUserByEmail(String email);
+
+	List<User> searchUsers(String nome, String cognome, String email, String telefono);
+
 	
 	
 }
