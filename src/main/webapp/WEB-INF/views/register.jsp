@@ -17,7 +17,7 @@
     <div class="container">
         <div id="responseMessage" class="mt-3"></div>
         <h2>Registrazione</h2>
-        <form id="registrationForm" method="POST" action="${pageContext.request.contextPath}/register">
+        <form id="registrationForm" method="POST">
 
             <div class="form-group">
                 <label for="nome">Nome</label>

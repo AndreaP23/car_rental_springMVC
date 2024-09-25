@@ -2,22 +2,32 @@ package com.xantrix.webapp.controller;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xantrix.webapp.domain.Prenotazione;
 import com.xantrix.webapp.domain.Veicolo;
 import com.xantrix.webapp.dto.PrenotazioneDTO;
 import com.xantrix.webapp.repository.PrenotazioneRepository;
 import com.xantrix.webapp.repository.VeicoloRepository;
+import com.xantrix.webapp.response.PrenotazioneResponse;
 
 @Controller
 public class CustomerController {
@@ -50,54 +60,79 @@ public class CustomerController {
         }
     }
 
-    @PostMapping("/salvaPrenotazione")
-    public String salvaPrenotazione(@ModelAttribute PrenotazioneDTO prenotazioneDTO, Model model) {
+    @PostMapping(value = "/salvaPrenotazione", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @ResponseBody
+    public PrenotazioneResponse salvaPrenotazione(@ModelAttribute @Valid PrenotazioneDTO prenotazioneDTO, 
+                                                  BindingResult result, 
+                                                  Model model) {
+        PrenotazioneResponse response = new PrenotazioneResponse();
+
+        if (result.hasErrors()) {
+            Map<String, String> errors = result.getFieldErrors().stream()
+                    .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+            response.setValidated(false);
+            response.setErrorMessages(errors);
+            return response;
+        }
+
         Veicolo veicolo = veicoloRepository.findById(prenotazioneDTO.getVeicoloId());
         
-        if (!validateVeicolo(veicolo, model)) return "prenotazioneVeicolo";
+        
+        if (!validateVeicolo(veicolo, response)) return response;
 
         LocalDate localDataInizio = prenotazioneDTO.getDataInizio();
         LocalDate localDataFine = prenotazioneDTO.getDataFine();
 
-        if (!validateDates(localDataInizio, localDataFine, model, veicolo)) return "prenotazioneVeicolo";
+        
+        if (!validateDates(localDataInizio, localDataFine, response, veicolo)) return response;
 
         Prenotazione prenotazione = createPrenotazione(prenotazioneDTO, localDataInizio, localDataFine);
-        prenotazioneRepository.save(prenotazione);
+        try {
+            prenotazioneRepository.save(prenotazione);
+            veicolo.setDisponibilita(0);
+            veicoloRepository.save(veicolo);
+            response.setValidated(true);
+            response.setSuccessMessage("Prenotazione effettuata con successo!");
+        } catch (DataIntegrityViolationException e) {
+            logger.error("Errore durante il salvataggio della prenotazione", e);
+            response.setValidated(false);
+            response.setErrorMessages(Map.of("general", "Errore durante la prenotazione. Riprova."));
+        }
 
-        veicolo.setDisponibilita(0);
-        veicoloRepository.save(veicolo);
-
-        return "redirect:/listveicoli";
+        return response;
     }
 
-    private boolean validateVeicolo(Veicolo veicolo, Model model) {
+    
+    private boolean validateVeicolo(Veicolo veicolo, PrenotazioneResponse response) {
         if (veicolo == null) {
-            model.addAttribute("errorMessage", "Veicolo non trovato.");
+            response.setValidated(false);
+            response.setErrorMessages(Map.of("veicolo", "Veicolo non trovato."));
             return false;
         }
         if (veicolo.getDisponibilita() == 0) {
-            model.addAttribute("errorMessage", "Il veicolo non è disponibile.");
+            response.setValidated(false);
+            response.setErrorMessages(Map.of("veicolo", "Il veicolo non è disponibile."));
             return false;
         }
         return true;
     }
 
-    private boolean validateDates(LocalDate startDate, LocalDate endDate, Model model, Veicolo veicolo) {
+    private boolean validateDates(LocalDate startDate, LocalDate endDate, PrenotazioneResponse response, Veicolo veicolo) {
         if (startDate == null || endDate == null) {
-            model.addAttribute("errorMessage", "Le date non possono essere nulle.");
-            model.addAttribute("veicolo", veicolo);
+            response.setValidated(false);
+            response.setErrorMessages(Map.of("dates", "Le date non possono essere nulle."));
             return false;
         }
 
         if (startDate.isBefore(LocalDate.now().plusDays(1))) {
-            model.addAttribute("errorMessage", "La data di inizio deve essere almeno il giorno successivo alla data odierna.");
-            model.addAttribute("veicolo", veicolo);
+            response.setValidated(false);
+            response.setErrorMessages(Map.of("startDate", "La data di inizio deve essere almeno il giorno successivo alla data odierna."));
             return false;
         }
 
         if (endDate.isBefore(startDate.plusDays(2))) {
-            model.addAttribute("errorMessage", "La data di fine deve essere almeno due giorni dopo la data di inizio.");
-            model.addAttribute("veicolo", veicolo);
+            response.setValidated(false);
+            response.setErrorMessages(Map.of("endDate", "La data di fine deve essere almeno due giorni dopo la data di inizio."));
             return false;
         }
 
