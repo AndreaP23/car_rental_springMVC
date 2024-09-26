@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" 
+"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+    <definition name="baseLayout" template="/WEB-INF/layouts/template/base.jsp">
+        <put-attribute name="content" value="" />
+        <put-attribute name="navbar" value="" /> 
+    </definition>
+
+    <definition name="navbarSuperUser" template="/WEB-INF/views/navbar/navbarSuperUser.jsp" />
+    <definition name="navbarCustomer" template="/WEB-INF/views/navbar/navbarCustomer.jsp" />
+
+    <definition name="schermataSuperUser" extends="baseLayout">
+        <put-attribute name="navbar" value="navbarSuperUser" /> 
+        <put-attribute name="titolo" value="Schermata SuperUser" />
+        <put-attribute name="content" value="/WEB-INF/views/schermataSuperUser.jsp" />
+    </definition>
+
+    <definition name="schermataCustomer" extends="baseLayout">
+        <put-attribute name="navbar" value="navbarCustomer" /> 
+        <put-attribute name="titolo" value="Schermata Cliente" />
+        <put-attribute name="content" value="/WEB-INF/views/schermataCustomer.jsp" />
+    </definition>
+    
+    <!-- SCHERMATE CUSTOMER -->
+        <definition name="listveicoli" extends="baseLayout">
+        <put-attribute name="navbar" value="navbarCustomer" /> 
+        <put-attribute name="titolo" value="Lista Veicoli" />
+        <put-attribute name="content" value="/WEB-INF/views/listveicoli.jsp" />
+    </definition>
+    
+        <definition name="prenotazioneVeicolo" extends="baseLayout">
+        <put-attribute name="navbar" value="navbarCustomer" /> 
+        <put-attribute name="titolo" value="Prenotazione Veicolo" />
+        <put-attribute name="content" value="/WEB-INF/views/prenotazioneVeicolo.jsp" />
+    </definition>
+    
+    <!--  SCHERMATA SUPERUSER -->
+        <definition name="listuser" extends="baseLayout">
+        <put-attribute name="navbar" value="navbarSuperUser" /> 
+        <put-attribute name="titolo" value="Lista Utenti" />
+        <put-attribute name="content" value="/WEB-INF/views/listuser.jsp" />
+    </definition>
+    
+      <definition name="listprenotazioni" extends="baseLayout">
+        <put-attribute name="navbar" value="navbarSuperUser" /> 
+        <put-attribute name="titolo" value="Lista Prenotazioni" />
+        <put-attribute name="content" value="/WEB-INF/views/listprenotazioni.jsp" />
+    </definition>
+    
+    
+</tiles-definitions>

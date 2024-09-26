@@ -30,6 +30,7 @@ import com.xantrix.webapp.response.UserResponse;
 import com.xantrix.webapp.service.UserService;
 
 @Controller
+@RequestMapping("/")
 public class HomeController {
     
     @Autowired
@@ -38,12 +39,12 @@ public class HomeController {
     @Autowired
     private UserService userService;
     
-    @RequestMapping(value = "/")
+    @RequestMapping(value = "/login")
     public String getWelcome(Model model) {
         return "login";
     }
     
-    @GetMapping("/login")
+    @RequestMapping
     public String showLoginPage() {
         return "login";  
     }

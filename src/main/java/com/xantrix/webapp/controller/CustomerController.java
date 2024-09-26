@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xantrix.webapp.domain.Prenotazione;
+import com.xantrix.webapp.domain.User;
 import com.xantrix.webapp.domain.Veicolo;
 import com.xantrix.webapp.dto.PrenotazioneDTO;
 import com.xantrix.webapp.repository.PrenotazioneRepository;
@@ -41,10 +43,15 @@ public class CustomerController {
     private static final Logger logger = LoggerFactory.getLogger(CustomerController.class);
 
     @GetMapping("/listveicoli")
-    public String listVeicoli(Model model) {
+    public String listVeicoli(Model model, HttpSession session) {
+    	 User user = (User) session.getAttribute("user");
+    	 if (user != null && user.getRuolo() == 2) {
         List<Veicolo> veicoli = veicoloRepository.listVeicolo();
         model.addAttribute("veicoli", veicoli);
         return "listveicoli";
+    	 } else {
+             return "redirect:/login"; 
+         }
     }
 
     @GetMapping("/prenotaVeicolo")

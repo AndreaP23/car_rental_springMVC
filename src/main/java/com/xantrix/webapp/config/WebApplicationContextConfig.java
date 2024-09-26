@@ -6,8 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.view.tiles3.TilesViewResolver;
 import org.springframework.web.util.UrlPathHelper;
 
 @Configuration
@@ -21,6 +23,12 @@ public class WebApplicationContextConfig implements WebMvcConfigurer {
         resolver.setPrefix("/WEB-INF/views/");
         resolver.setSuffix(".jsp");
         return resolver;
+    }
+    
+    @Override
+    public void configureViewResolvers(ViewResolverRegistry registry) {
+    	TilesViewResolver viewResolver = new TilesViewResolver();
+    	registry.viewResolver(viewResolver);
     }
     
     
@@ -38,6 +46,18 @@ public class WebApplicationContextConfig implements WebMvcConfigurer {
         registry
           .addResourceHandler("/resources/**")
           .addResourceLocations("/resources/");	
+        
+        registry
+        .addResourceHandler("/static/**")
+        .addResourceLocations("/static/");
+        
+        registry
+        .addResourceHandler("/navbar/**")
+        .addResourceLocations("/navbar/");
     }
+    
+    
+    
+    
 	
 }
